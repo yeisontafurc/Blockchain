@@ -61,15 +61,9 @@ App = {
 
   bindEvents: function () {
     console.log("bindEvents");
-
-
-
     $(document).on('click', '.btn-adopt', App.handleAdopt);
-
     $(document).on('click', '.btn-addRol', App.handleAddRol);
     $(document).on('click', '.btn-login', App.login);
-
-
   },
 
   markAdopted: function (adopters, account) {
