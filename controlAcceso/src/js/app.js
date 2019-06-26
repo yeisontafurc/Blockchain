@@ -2,6 +2,7 @@ App = {
   web3Provider: null,
   contracts: {},
 
+
   init: async function () {
     console.log("init");
     return await App.initWeb3();
@@ -53,7 +54,7 @@ App = {
 
       // Use our contract to retrieve and mark the adopted pets
 
-     
+
     });
 
     return App.bindEvents();
@@ -61,36 +62,85 @@ App = {
 
   bindEvents: function () {
     console.log("bindEvents");
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
-    $(document).on('click', '.btn-addRol', App.handleAddRol);
+
+
+
+    $(document).on('click', '.btn-AsignarRol', App.enviarAsignarRoles);
     $(document).on('click', '.btn-login', App.login);
+    $(document).on('click', '.btn-crearUsuarios', App.enviarCrearUsuarios);
+    $(document).on('click', '.btn-addRol', App.agregarRol);
+    $(document).on('click', '.btn-crear', App.crearUsuario);
+
+
+
+
+
+
+
   },
 
-  markAdopted: function (adopters, account) {
-    console.log("markAdopted");
 
-    var adoptionInstance;
-
-    App.contracts.Adoption.deployed().then(function (instance) {
-      adoptionInstance = instance;
-
-      return adoptionInstance.getAdopters.call();
-    }).then(function (adopters) {
-      for (i = 0; i < adopters.length; i++) {
-        if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-          $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
-        }
-      }
-    }).catch(function (err) {
-      console.log(err.message);
-    });
+  redireccionar: function (pagina) {
+    window.location.replace(pagina)
   },
 
-  
+  enviarCrearUsuarios: function (event) {
+
+
+    var url_string = window.location;
+    var url = new URL(url_string);
+    var usuario = url.searchParams.get("usuario");
+
+
+
+    tieneRol = App.rolAsignado(usuario, "superadmin");
+
+    if (tieneRol == "true") {
+      console.log("OK");
+      window.location.replace("crearUsuarios.html?usuario=" + usuario);
+
+    } else {
+      window.alert("El usuario no tiene los privilegios suficientes")
+    }
+
+    // window.location.replace("crearUsuarios.html");
+
+    console.log(event);
+
+  },
+
+  enviarAsignarRoles: function (event) {
+
+
+    var url_string = window.location;
+    var url = new URL(url_string);
+    var usuario = url.searchParams.get("usuario");
+    console.log("antes tiene rol");
+
+    tieneRol = App.rolAsignado(usuario, "superadmin");
+
+    console.log("despues tiene rol");
+    if (tieneRol == true) {
+      console.log("OK");
+      window.location.replace("asignarRoles.html?usuario=" + usuario);
+
+    } else {
+      window.alert("El usuario no tiene los privilegios suficientes")
+    }
+
+    // window.location.replace("crearUsuarios.html");
+
+    console.log(event);
+
+  },
+
+
+
   login: function (event) {
     console.log("handlelogin");
     usuario = window.document.getElementById("usuario").value;
 
+    usuarioGlobal = usuario;
     clave = window.document.getElementById("clave").value;
 
     event.preventDefault();
@@ -99,16 +149,9 @@ App = {
 
     App.contracts.ControlAcceso.deployed().then(function (instance) {
       ctlAccInstancia = instance;
-      console.log("usuario: " +usuario + "clave: " + clave);
+      console.log("usuario: " + usuario + "clave: " + clave);
 
-      // Execute adopt as a transaction by sending account
-     // ctlAccInstancia.obtenerClave(usuario)
-    // resultado = ctlAccInstancia.obtenerClave(usuario).call
-    return ctlAccInstancia.obtenerClave(usuario);
-
-
-    
-   //return ctlAccInstancia.asignarRol('afasf', 'sdfsdfs');
+      return ctlAccInstancia.obtenerClave(usuario);
 
     }).then(function (result) {
       console.log("result");
@@ -117,25 +160,27 @@ App = {
 
       password = result;
 
-if (password==clave) {
-  console.log('OK');
-  window.location.replace("admin.html");
+      if (password == clave) {
+        console.log('OK');
 
-} else {
-  console.log('KO');
-  window.alert('Las credenciales usuario/clave no son válidas');
-}
+        ///Redireccionar a pagina de modulos
+        window.location.replace("modulos.html?usuario=" + usuario);
 
-     // window.alert("El rol "+rol +  "fue asignado correctamente al usuario: " + usuario)
+      } else {
+        console.log('KO');
+        window.alert('Las credenciales usuario/clave no son válidas');
+      }
 
-    
+      // window.alert("El rol "+rol +  "fue asignado correctamente al usuario: " + usuario)
+
+
     }).catch(function (err) {
       console.log(err.message);
     });
 
   },
 
-  handleAddRol: function (event) {
+  agregarRol: function (event) {
     console.log("handleAddRol");
     usuario = window.document.getElementById("usuario").value;
 
@@ -151,7 +196,7 @@ if (password==clave) {
 
     App.contracts.ControlAcceso.deployed().then(function (instance) {
       ctlAccInstancia = instance;
-      console.log("usuario: " +usuario + "rol: " + rol);
+      console.log("usuario: " + usuario + "rol: " + rol);
 
       // Execute adopt as a transaction by sending account
       return ctlAccInstancia.asignarRol(usuario, rol);
@@ -160,92 +205,26 @@ if (password==clave) {
 
       console.log(result);
 
-      window.alert("El rol "+rol +  "fue asignado correctamente al usuario: " + usuario)
+      window.alert("El rol " + rol + "fue asignado correctamente al usuario: " + usuario)
 
-    
+
     }).catch(function (err) {
       console.log(err.message);
     });
 
   },
 
-  handleAdopt: function (event) {
-    console.log("handleAdopt");
 
-
-    event.preventDefault();
-
-    usuario = window.document.getElementById("usuario").value;
-
-    clave = window.document.getElementById("clave").value;
-
-    var ctlAccInstancia;
-
-    App.contracts.ControlAcceso.deployed().then(function (instance) {
-      ctlAccInstancia = instance;
-      console.log(usuario + " " + clave);
-
-      // Execute adopt as a transaction by sending account
-      return ctlAccInstancia.asignarRol(usuario, clave);
-    }).then(function (result) {
-      console.log("result");
-
-      console.log(result);
-
-      window.location.replace("admin.html");
-
-    
-    }).catch(function (err) {
-      console.log(err.message);
-    });
-
-  },
-  handleAdopt2: function (event) {
-    console.log("handleAdopt");
-
-    
-
-    usuario = window.document.getElementById("usuario").value;
-
-    clave = window.document.getElementById("clave").value;
-
-
-    console.log(usuario + " " + clave);
-    event.preventDefault();
-
-    var petId = parseInt($(event.target).data('id'));
-
-    var adoptionInstance;
-
-    web3.eth.getAccounts(function (error, accounts) {
-      if (error) {
-        console.log(error);
-      }
-
-      var account = accounts[0];
-
-      App.contracts.Adoption.deployed().then(function (instance) {
-        adoptionInstance = instance;
-
-        // Execute adopt as a transaction by sending account
-        return adoptionInstance.adopt(petId, { from: account });
-      }).then(function (result) {
-        return App.markAdopted();
-      }).catch(function (err) {
-        console.log(err.message);
-      });
-    });
-  },
-
-  tieneRol: function (rol, account) {
+  rolAsignado: function (usuario, rol) {
     var ctlAccInstancia;
 
     App.contracts.ControlAcceso.deployed().then(function (instance) {
       ctlAccInstancia = instance;
 
-      rolAsignado
-      return ctlAccInstancia.rolAsignado(account, rol);
+      return ctlAccInstancia.rolAsignado(usuario, rol);
     }).then(function (retorno) {
+      console.log("rol asignado " + rol + " " + retorno);
+      return retorno;
       console.log(retorno);
     }).catch(function (err) {
       console.log(err.message);
@@ -254,26 +233,39 @@ if (password==clave) {
 
 
   },
-  asignarRol: function (usuario, rol) {
-    console.log("rolAsignado");
-    var usuario = window.document.getElementById("usuario").value;
 
-    var clave = window.document.getElementById("clave").value;
+  crearUsuario: function (event) {
+    console.log("crearUsuario");
+    usuario = window.document.getElementById("usuario").value;
+
+    clave = window.document.getElementById("clave").value;
+
+    event.preventDefault();
+
+
     var ctlAccInstancia;
 
     App.contracts.ControlAcceso.deployed().then(function (instance) {
       ctlAccInstancia = instance;
+      console.log("usuario: " + usuario + " clave: " + clave);
+
+      // Execute adopt as a transaction by sending account
+      return ctlAccInstancia.crearUsuario(usuario, clave);
+    }).then(function (result) {
+      console.log("result");
+
+      console.log(result);
+
+      window.alert("El Usuario: " + usuario + "fue creado correctamente ");
 
 
-      return ctlAccInstancia.asignarRol(usuario, rol);
-    }).then(function (adopters) {
-      console.log("OK")
     }).catch(function (err) {
       console.log(err.message);
     });
 
   },
- 
+
+
 }
 
 $(function () {
