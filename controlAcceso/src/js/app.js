@@ -82,7 +82,7 @@ App = {
     var url_string = window.location;
     var url = new URL(url_string);
     var usuario = url.searchParams.get("usuario");
-    if (usuario === null || usuario === undefined || usuario ==="") {
+    if (usuario === null || usuario === undefined || usuario === "") {
       window.location.replace("index.html");
     }
 
@@ -110,7 +110,7 @@ App = {
     var url = new URL(url_string);
     var usuario = url.searchParams.get("usuario");
 
-    if (usuario === null || usuario === undefined || usuario ==="") {
+    if (usuario === null || usuario === undefined || usuario === "") {
       window.location.replace("index.html");
     }
     console.log("antes tiene rol");
@@ -133,7 +133,7 @@ App = {
     var url_string = window.location;
     var url = new URL(url_string);
     var usuario = url.searchParams.get("usuario");
-    if (usuario === null || usuario === undefined || usuario ==="") {
+    if (usuario === null || usuario === undefined || usuario === "") {
       window.location.replace("index.html");
     } else {
       ///Redireccionar a pagina de modulos
@@ -153,8 +153,10 @@ App = {
     usuarioGlobal = usuario;
     clave = window.document.getElementById("clave").value;
 
-    if (usuario === null || usuario === undefined || usuario ==="") {
+    if (usuario === null || usuario === undefined || usuario === "" ||
+      clave === null || clave === undefined || clave === "") {
       window.location.replace("index.html");
+      window.alert("Usuario y clave son requeridos");
     }
 
     event.preventDefault();
@@ -216,7 +218,7 @@ App = {
       console.log(result);
 
       window.alert("El rol " + rol + "fue asignado correctamente al usuario: " + usuario)
-
+      App.gestionUsuarios();
 
     }).catch(function (err) {
       console.log(err.message);
@@ -265,7 +267,7 @@ App = {
       console.log(result);
 
       window.alert("El Usuario: " + usuario + "fue creado correctamente ");
-
+      App.gestionUsuarios();
 
     }).catch(function (err) {
       console.log(err.message);
