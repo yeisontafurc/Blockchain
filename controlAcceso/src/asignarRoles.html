@@ -15,27 +15,27 @@
   <title>Administación</title>
 
   <div class="container">
-    <label for="usuario"><b>Usuario</b></label>
-    <input id="usuario" type="text" placeholder="Ingrese el usuario" name="usuario" required>
+    <div class="form-login">
+      <label for="usuario"><b>Usuario</b></label>
+      <input id="usuario" type="text" placeholder="Ingrese el usuario" name="usuario" required>
 
-    <label for="rol"><b>Rol</b></label>
-    <input id="rol" type="text" placeholder="Ingrese rol" name="rol" required>
+      <label for="rol"><b>Rol</b></label>
+      <input id="rol" type="text" placeholder="Ingrese rol" name="rol" required>
+      <div style="text-align: center">
+        <button type="button" class="btn-addRol">Asignar Rol</button>
+        <button type="button" class="btn-cancel">Regresar</button>
+      </div>
+    </div>
 
-    <button type="button" class="btn-addRol">Asignar Rol</button>
-
-  </div>
-
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
   </div>
 </form>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/web3.min.js"></script>
+<script src="js/truffle-contract.js"></script>
+<script src="js/app.js"></script>
 </body>
 
 </html>

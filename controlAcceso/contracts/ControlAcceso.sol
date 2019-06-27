@@ -13,7 +13,7 @@ contract ControlAcceso {
 
   constructor () public{
     string memory superUsuario = toString(msg.sender);
-    roles[superUsuario]['superadmin'] = true;
+    roles[superUsuario]["superadmin"] = true;
     usuarios["superadmin"] = "superadmin";
   }
   
